@@ -89,6 +89,13 @@ body{
 .delta.up{background:rgba(16,185,129,0.10);color:#047857}
 .delta.down{background:rgba(239,68,68,0.10);color:#b91c1c}
 .delta.flat{background:rgba(100,116,139,0.10);color:#475569}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:7px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-feature-settings:'tnum'}
+.status-pill.active{background:rgba(16,185,129,0.12);color:#047857}
+.status-pill.active::before{content:'';width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,0.18)}
+.status-pill.inactive{background:rgba(148,163,184,0.16);color:#475569}
+.status-pill.inactive::before{content:'';width:6px;height:6px;border-radius:50%;background:#94a3b8}
+.status-pill.ended{background:rgba(245,158,11,0.14);color:#b45309}
+.status-pill.ended::before{content:'';width:6px;height:6px;border-radius:50%;background:#f59e0b}
 
 /* ======= SECTION ======= */
 .section{margin-top:36px}
@@ -195,22 +202,22 @@ td.name{font-weight:600;color:var(--ink-1)}
       <div class="card">
         <div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Valor Investido</div>
         <div class="kpi-value">€ 38.460,51</div>
-        <div class="kpi-sub"><span class="delta up">▲ 78,81%</span> vs €21.509,71</div>
+        <div class="kpi-sub">CA01 €36.110 + CA02 €2.350</div>
       </div>
       <div class="card">
         <div class="kpi-label"><span class="kpi-icon bg-sky">◉</span>Impressões</div>
         <div class="kpi-value">5.528.493</div>
-        <div class="kpi-sub"><span class="delta up">▲ 72,09%</span> vs 3.212.644</div>
+        <div class="kpi-sub">5,53 milhões no trimestre</div>
       </div>
       <div class="card">
         <div class="kpi-label"><span class="kpi-icon bg-violet">↗</span>Cliques</div>
         <div class="kpi-value">85.671</div>
-        <div class="kpi-sub"><span class="delta up">▲ 46,78%</span> vs 58.365</div>
+        <div class="kpi-sub">CTR consolidado 1,55%</div>
       </div>
       <div class="card">
         <div class="kpi-label"><span class="kpi-icon bg-amber">▦</span>Nº de Anúncios</div>
         <div class="kpi-value">140</div>
-        <div class="kpi-sub"><span class="delta down">▼ 24,73%</span> vs 186</div>
+        <div class="kpi-sub">24 campanhas (4 ativas · 20 inativas)</div>
       </div>
     </div>
 
@@ -246,12 +253,20 @@ td.name{font-weight:600;color:var(--ink-1)}
       </div>
       <div class="grid grid-2">
         <div class="insight">
-          <h4>📈 Eficiência ganha em alcance, perde em qualidade</h4>
-          <p>O alcance e impressões dobraram com investimento ligeiramente menor, derrubando CPM (-52%) e CPC (-32%). Porém o CTR caiu ~30%, sinalizando que a segmentação ampliou o público sem manter a relevância das peças. O custo por lead caiu 10% e leads subiram 7,5% — ganho de eficiência, mas com gargalo na conversão clique→lead.</p>
+          <h4>🟢 Apenas 4 campanhas estavam ATIVAS no fim do trimestre</h4>
+          <p>Das 24 campanhas que rodaram (21 CA01 + 3 CA02), só <strong>4 permanecem ativas</strong>: [r][tp] implantes, [r][tp] sem verificação + Simples, [wb] form capilar (CA01) e [LEAD GEN] Transplante capilar (CA02). Juntas: <strong>€13.114,44 (34% do investido)</strong> · 1.967 leads · CPL médio <strong>€6,67</strong>. Os outros 66% (€25.346,07) foram em campanhas hoje desativadas.</p>
         </div>
         <div class="insight">
-          <h4>⚠️ Fadiga criativa no Lead Gen</h4>
-          <p>Frequência média subiu para 5,89 (acima do ideal 2–3), encarecendo CPC (+14%) e CPM (+12%). Apesar de +38% em leads, o custo por lead também subiu 37%. Recomenda-se rotacionar criativos, expandir lookalikes e avaliar otimização para "Leads de Qualidade".</p>
+          <h4>⏱ Duas campanhas de implantes encerraram em fevereiro</h4>
+          <p><strong>[wb] implantes | Instituto [d] I</strong> (€7.389,27 · maior gasto único do trimestre · CPL €25,93) <strong>encerrou 21/02</strong>. <strong>[wb] implantes | [d] I</strong> (€2.428,10 · CPL €4,25) <strong>encerrou 13/02</strong>. Juntas: <strong>€9.817,37 (25,5% do total)</strong> em campanhas que rodaram só ~50 dos 90 dias. CPL muito diferente entre as duas (€25 vs €4) sugere problema de criativo/público na "Instituto".</p>
+        </div>
+        <div class="insight">
+          <h4>🏆 Ranking real de CPL — qual campanha entregou mais</h4>
+          <p>Mais eficientes: <strong>[d] I implantes €4,25</strong> · <strong>[r][tp] sem verif €4,41</strong> · <strong>[LEAD GEN] capilar (CA02) €5,28</strong> · <strong>Nicaela implantes ABO €6,87</strong>. Mais caras: <strong>escada [I][tp] €153,43</strong> (2 leads) · <strong>alinhadores [r] €44,68</strong> (8 leads) · <strong>[d] I Instituto €25,93</strong>. Foco do próximo trimestre: replicar criativo da [r][tp] sem verificação — €4,41/lead com 994 leads é o melhor combo volume×eficiência.</p>
+        </div>
+        <div class="insight">
+          <h4>⚠️ Frequência alta = saturação de público lookalike</h4>
+          <p>3 campanhas com frequência acima de 4: <strong>[r][tp] sem verif 5,02</strong> · <strong>[d] I Instituto 4,83</strong> · <strong>[r][tp] 4,49</strong>. Cada pessoa viu o anúncio quase 5x — sintoma de fadiga criativa em lookalikes. Recomendação: rotacionar criativos a cada 14 dias e ampliar bases para reduzir frequência ideal a 2–3.</p>
         </div>
         <div class="insight">
           <h4>📱 Mobile domina (99,5% do alcance)</h4>
@@ -278,22 +293,22 @@ td.name{font-weight:600;color:var(--ink-1)}
     </div>
 
     <div class="grid grid-4">
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Investido</div><div class="kpi-value">€ 2.350,14</div><div class="kpi-sub"><span class="delta down">▼ 3,57%</span> vs €2.437,02</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-sky">◉</span>Impressões</div><div class="kpi-value">559.069</div><div class="kpi-sub"><span class="delta up">▲ 99,81%</span> vs 279.799</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">⌖</span>Alcance</div><div class="kpi-value">161.057</div><div class="kpi-sub"><span class="delta up">▲ 100,2%</span> vs 80.454</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">↗</span>Cliques no Link</div><div class="kpi-value">6.564</div><div class="kpi-sub"><span class="delta up">▲ 41,53%</span> vs 4.638</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Investido</div><div class="kpi-value">€ 2.350,14</div><div class="kpi-sub">3 campanhas · 1 ativa</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-sky">◉</span>Impressões</div><div class="kpi-value">559.069</div><div class="kpi-sub">559 mil no trimestre</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">⌖</span>Alcance</div><div class="kpi-value">161.057</div><div class="kpi-sub">público único atingido</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">↗</span>Cliques no Link</div><div class="kpi-value">6.564</div><div class="kpi-sub">no link das peças</div></div>
     </div>
 
     <div class="grid grid-4" style="margin-top:18px">
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-amber">%</span>CTR (link)</div><div class="kpi-value">1,17%</div><div class="kpi-sub"><span class="delta down">▼ 29,17%</span> vs 1,66%</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-rose">€</span>CPC médio</div><div class="kpi-value">€ 0,36</div><div class="kpi-sub"><span class="delta up">▼ 31,86%</span> vs €0,53</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-slate">€</span>CPM médio</div><div class="kpi-value">€ 4,20</div><div class="kpi-sub"><span class="delta up">▼ 51,74%</span> vs €8,71</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">↻</span>Frequência</div><div class="kpi-value">3,47</div><div class="kpi-sub"><span class="delta flat">▼ 0,19%</span> vs 3,48</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-amber">%</span>CTR (link)</div><div class="kpi-value">1,17%</div><div class="kpi-sub">cliques / impressões</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-rose">€</span>CPC médio</div><div class="kpi-value">€ 0,36</div><div class="kpi-sub">custo por clique</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-slate">€</span>CPM médio</div><div class="kpi-value">€ 4,20</div><div class="kpi-sub">custo por mil impressões</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">↻</span>Frequência</div><div class="kpi-value">3,47</div><div class="kpi-sub">impressões por pessoa</div></div>
     </div>
 
     <div class="grid grid-2" style="margin-top:18px">
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">✓</span>Leads (cadastros)</div><div class="kpi-value">358</div><div class="kpi-sub"><span class="delta up">▲ 7,51%</span> vs 333</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Custo por Lead</div><div class="kpi-value">€ 6,56</div><div class="kpi-sub"><span class="delta up">▼ 10,30%</span> vs €7,32</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">✓</span>Leads (cadastros)</div><div class="kpi-value">358</div><div class="kpi-sub">cadastros gerados</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Custo por Lead</div><div class="kpi-value">€ 6,56</div><div class="kpi-sub">CPL médio do CA02</div></div>
     </div>
 
     <div class="section">
@@ -310,17 +325,18 @@ td.name{font-weight:600;color:var(--ink-1)}
     </div>
 
     <div class="section">
-      <div class="section-head"><div><h3>Campanhas em destaque</h3><p>Detalhamento por resultado</p></div></div>
+      <div class="section-head"><div><h3>Campanhas do CA02 — detalhamento completo</h3><p>3 campanhas no trimestre · status, CPL e métricas reais (fonte: export Meta Ads Manager)</p></div></div>
       <div class="card" style="padding:0">
         <div class="tbl-wrap">
           <table>
             <thead><tr>
-              <th>Campanha</th><th>Resultado</th><th class="num">Custo/Result.</th><th class="num">Investido</th>
+              <th>Campanha</th><th>Status</th><th>Resultado</th><th class="num">Custo/Result.</th><th class="num">Investido</th>
               <th class="num">Alcance</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">CPM</th><th class="num">Freq.</th>
             </tr></thead>
             <tbody>
-              <tr><td class="name">[LEAD GEN] Transplante capilar</td><td>242 leads</td><td class="num">€5,28</td><td class="num">€1.277,21</td><td class="num">102.234</td><td class="num">373.712</td><td class="num">1,33%</td><td class="num">€0,26</td><td class="num">€3,42</td><td class="num">3,66</td></tr>
-              <tr><td class="name">[LEAD GENS] Implantes Nicaela</td><td>116 leads</td><td class="num">€8,98</td><td class="num">€1.042,18</td><td class="num">48.190</td><td class="num">165.010</td><td class="num">2,53%</td><td class="num">€0,25</td><td class="num">€6,32</td><td class="num">3,42</td></tr>
+              <tr><td class="name">[LEAD GEN] Transplante capilar</td><td><span class="status-pill active">Ativa</span></td><td>242 leads</td><td class="num">€5,28</td><td class="num">€1.277,21</td><td class="num">102.234</td><td class="num">373.712</td><td class="num">0,76%</td><td class="num">€0,45</td><td class="num">€3,42</td><td class="num">3,66</td></tr>
+              <tr><td class="name">[LEAD GENS] Implantes Nicaela</td><td><span class="status-pill inactive">Inativa</span></td><td>116 leads</td><td class="num">€8,98</td><td class="num">€1.042,18</td><td class="num">48.190</td><td class="num">165.010</td><td class="num">2,04%</td><td class="num">€0,31</td><td class="num">€6,32</td><td class="num">3,42</td></tr>
+              <tr style="opacity:0.65"><td class="name">[TRÁFEGO] Procura-se Luna <span style="font-size:11px;color:var(--ink-3)">(excluído dos totais)</span></td><td><span class="status-pill inactive">Inativa</span></td><td>359 cliques</td><td class="num">€0,09</td><td class="num">€30,75</td><td class="num">18.220</td><td class="num">20.347</td><td class="num">1,76%</td><td class="num">€0,09</td><td class="num">€1,51</td><td class="num">1,12</td></tr>
             </tbody>
           </table>
         </div>
@@ -372,22 +388,22 @@ td.name{font-weight:600;color:var(--ink-1)}
     </div>
 
     <div class="grid grid-4">
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Investido</div><div class="kpi-value">€ 36.110,37</div><div class="kpi-sub"><span class="delta up">▲ 89,33%</span> vs €19.072,69</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-sky">◉</span>Impressões</div><div class="kpi-value">4.969.424</div><div class="kpi-sub"><span class="delta up">▲ 69,44%</span> vs 2.932.845</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">⌖</span>Alcance</div><div class="kpi-value">843.728</div><div class="kpi-sub"><span class="delta up">▲ 40,5%</span> vs 600.472</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">↗</span>Cliques no Link</div><div class="kpi-value">44.594</div><div class="kpi-sub"><span class="delta up">▲ 65,43%</span> vs 26.956</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Investido</div><div class="kpi-value">€ 36.110,37</div><div class="kpi-sub">21 campanhas · 3 ativas</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-sky">◉</span>Impressões</div><div class="kpi-value">4.969.424</div><div class="kpi-sub">4,97 milhões no trimestre</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">⌖</span>Alcance</div><div class="kpi-value">843.728</div><div class="kpi-sub">público único atingido</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">↗</span>Cliques no Link</div><div class="kpi-value">44.594</div><div class="kpi-sub">no link das peças</div></div>
     </div>
 
     <div class="grid grid-4" style="margin-top:18px">
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-amber">%</span>CTR (link)</div><div class="kpi-value">0,90%</div><div class="kpi-sub"><span class="delta down">▼ 2,37%</span> vs 0,92%</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-rose">€</span>CPC médio</div><div class="kpi-value">€ 0,81</div><div class="kpi-sub"><span class="delta down">▲ 14,45%</span> vs €0,71</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-slate">€</span>CPM médio</div><div class="kpi-value">€ 7,27</div><div class="kpi-sub"><span class="delta down">▲ 11,74%</span> vs €6,50</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">↻</span>Frequência</div><div class="kpi-value">5,89</div><div class="kpi-sub"><span class="delta down">▲ 20,59%</span> vs 4,88 · acima do ideal</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-amber">%</span>CTR (link)</div><div class="kpi-value">0,90%</div><div class="kpi-sub">cliques / impressões</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-rose">€</span>CPC médio</div><div class="kpi-value">€ 0,81</div><div class="kpi-sub">custo por clique</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-slate">€</span>CPM médio</div><div class="kpi-value">€ 7,27</div><div class="kpi-sub">custo por mil impressões</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">↻</span>Frequência</div><div class="kpi-value">5,89</div><div class="kpi-sub">acima do ideal (2–3)</div></div>
     </div>
 
     <div class="grid grid-2" style="margin-top:18px">
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">✓</span>Leads (cadastros)</div><div class="kpi-value">4.299</div><div class="kpi-sub"><span class="delta up">▲ 38,36%</span> vs 3.107</div></div>
-      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Custo por Lead</div><div class="kpi-value">€ 8,40</div><div class="kpi-sub"><span class="delta down">▲ 36,83%</span> vs €6,14</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">✓</span>Leads (cadastros)</div><div class="kpi-value">4.299</div><div class="kpi-sub">cadastros gerados</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Custo por Lead</div><div class="kpi-value">€ 8,40</div><div class="kpi-sub">CPL médio do CA01</div></div>
     </div>
 
     <div class="section">
@@ -404,20 +420,44 @@ td.name{font-weight:600;color:var(--ink-1)}
     </div>
 
     <div class="section">
-      <div class="section-head"><div><h3>Campanhas em destaque</h3><p>Lead Gen · Top 5</p></div></div>
+      <div class="section-head"><div><h3>Status das campanhas — visão consolidada</h3><p>Distribuição do investimento por status atual</p></div></div>
+      <div class="grid grid-4">
+        <div class="card"><div class="kpi-label"><span class="kpi-icon" style="background:rgba(16,185,129,0.14);color:#047857">●</span>Ativas</div><div class="kpi-value">€ 11.837,23</div><div class="kpi-sub">3 campanhas · 32,8% do CA01</div></div>
+        <div class="card"><div class="kpi-label"><span class="kpi-icon" style="background:rgba(245,158,11,0.14);color:#b45309">⏱</span>Encerradas no trimestre</div><div class="kpi-value">€ 9.817,37</div><div class="kpi-sub">2 campanhas · 27,2% · pararam em fev</div></div>
+        <div class="card"><div class="kpi-label"><span class="kpi-icon" style="background:rgba(148,163,184,0.18);color:#475569">●</span>Inativas (demais)</div><div class="kpi-value">€ 14.455,77</div><div class="kpi-sub">12 campanhas · 40,0% do CA01</div></div>
+        <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">✓</span>CPL global do CA01</div><div class="kpi-value">€ 8,40</div><div class="kpi-sub">4.299 leads / €36.110,37</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Campanhas do CA01 — detalhamento completo</h3><p>21 campanhas (17 com investimento) · ordenado por valor investido · fonte: export Meta Ads Manager</p></div></div>
       <div class="card" style="padding:0">
         <div class="tbl-wrap">
           <table>
             <thead><tr>
-              <th>Campanha</th><th>Resultado</th><th class="num">Custo/Lead</th><th class="num">Investido</th>
+              <th>Campanha</th><th>Status</th><th>Resultado</th><th class="num">CPL</th><th class="num">Investido</th>
               <th class="num">Alcance</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">CPM</th><th class="num">Freq.</th>
             </tr></thead>
             <tbody>
-              <tr><td class="name">[wb] implantes | instituto [r] [tp] - sem verificação + Simples</td><td>994 leads</td><td class="num">€4,41</td><td class="num">€4.382,84</td><td class="num">143.830</td><td class="num">721.999</td><td class="num">1,25%</td><td class="num">€0,49</td><td class="num">€6,07</td><td class="num">5,02</td></tr>
-              <tr><td class="name">[LEAD GENS] [ABO] Implantes - Nicaela</td><td>674 leads</td><td class="num">€6,87</td><td class="num">€4.631,87</td><td class="num">290.718</td><td class="num">826.801</td><td class="num">1,55%</td><td class="num">€0,36</td><td class="num">€5,60</td><td class="num">2,84</td></tr>
-              <tr><td class="name">[wb] implantes | instituto [r] [tp]</td><td>630 leads</td><td class="num">€10,50</td><td class="num">€6.612,89</td><td class="num">184.165</td><td class="num">826.720</td><td class="num">1,25%</td><td class="num">€0,64</td><td class="num">€8,00</td><td class="num">4,49</td></tr>
-              <tr><td class="name">[wb] implantes | [d] I</td><td>571 leads</td><td class="num">€4,25</td><td class="num">€2.428,10</td><td class="num">124.421</td><td class="num">467.570</td><td class="num">1,94%</td><td class="num">€0,27</td><td class="num">€5,19</td><td class="num">3,76</td></tr>
-              <tr><td class="name">[wb] alinhadores | [d] - I</td><td>321 leads</td><td class="num">€9,52</td><td class="num">€3.054,97</td><td class="num">142.192</td><td class="num">499.381</td><td class="num">1,03%</td><td class="num">€0,59</td><td class="num">€6,12</td><td class="num">3,51</td></tr>
+              <tr><td class="name">[wb] implantes | Instituto [d] I</td><td><span class="status-pill ended">Encerrou 21/02</span></td><td>285 leads</td><td class="num">€25,93</td><td class="num">€7.389,27</td><td class="num">114.014</td><td class="num">550.250</td><td class="num">1,06%</td><td class="num">€1,26</td><td class="num">€13,43</td><td class="num">4,83</td></tr>
+              <tr><td class="name">[wb] implantes | instituto [r] [tp]</td><td><span class="status-pill active">Ativa</span></td><td>630 leads</td><td class="num">€10,50</td><td class="num">€6.612,89</td><td class="num">184.165</td><td class="num">826.720</td><td class="num">0,68%</td><td class="num">€1,18</td><td class="num">€8,00</td><td class="num">4,49</td></tr>
+              <tr><td class="name">[LEAD GENS] [ABO] Implantes - Nicaela</td><td><span class="status-pill inactive">Inativa</span></td><td>674 leads</td><td class="num">€6,87</td><td class="num">€4.631,87</td><td class="num">290.718</td><td class="num">826.801</td><td class="num">0,91%</td><td class="num">€0,61</td><td class="num">€5,60</td><td class="num">2,84</td></tr>
+              <tr><td class="name">[wb] implantes | [r] [tp] sem verificação + Simples</td><td><span class="status-pill active">Ativa</span></td><td>994 leads</td><td class="num">€4,41</td><td class="num">€4.382,84</td><td class="num">143.830</td><td class="num">721.999</td><td class="num">0,79%</td><td class="num">€0,77</td><td class="num">€6,07</td><td class="num">5,02</td></tr>
+              <tr><td class="name">[wb] alinhadores | [d] - I</td><td><span class="status-pill inactive">Inativa</span></td><td>321 leads</td><td class="num">€9,52</td><td class="num">€3.054,97</td><td class="num">142.192</td><td class="num">499.381</td><td class="num">0,47%</td><td class="num">€1,29</td><td class="num">€6,12</td><td class="num">3,51</td></tr>
+              <tr><td class="name">[wb] implantes | [d] I</td><td><span class="status-pill ended">Encerrou 13/02</span></td><td>571 leads</td><td class="num">€4,25</td><td class="num">€2.428,10</td><td class="num">124.421</td><td class="num">467.570</td><td class="num">1,13%</td><td class="num">€0,46</td><td class="num">€5,19</td><td class="num">3,76</td></tr>
+              <tr><td class="name">[wb] form | estética | protocolo</td><td><span class="status-pill inactive">Inativa</span></td><td>263 leads</td><td class="num">€7,99</td><td class="num">€2.101,55</td><td class="num">70.285</td><td class="num">217.491</td><td class="num">2,05%</td><td class="num">€0,47</td><td class="num">€9,66</td><td class="num">3,09</td></tr>
+              <tr><td class="name">[wb] alinhadores</td><td><span class="status-pill inactive">Inativa</span></td><td>256 leads</td><td class="num">€6,57</td><td class="num">€1.682,51</td><td class="num">101.961</td><td class="num">250.506</td><td class="num">1,39%</td><td class="num">€0,48</td><td class="num">€6,72</td><td class="num">2,46</td></tr>
+              <tr><td class="name">[LEAD GENS] [ABO] Implantes</td><td><span class="status-pill inactive">Inativa</span></td><td>85 leads</td><td class="num">€14,01</td><td class="num">€1.190,98</td><td class="num">128.675</td><td class="num">201.913</td><td class="num">0,87%</td><td class="num">€0,68</td><td class="num">€5,90</td><td class="num">1,57</td></tr>
+              <tr><td class="name">[wb] form | capilar</td><td><span class="status-pill active">Ativa</span></td><td>101 leads</td><td class="num">€8,33</td><td class="num">€841,50</td><td class="num">50.289</td><td class="num">134.587</td><td class="num">0,57%</td><td class="num">€1,10</td><td class="num">€6,25</td><td class="num">2,68</td></tr>
+              <tr><td class="name">[LEAD GENS] [ABO] Alinhadores Nicaela — Promo</td><td><span class="status-pill inactive">Inativa</span></td><td>24 leads</td><td class="num">€15,01</td><td class="num">€360,13</td><td class="num">37.310</td><td class="num">53.248</td><td class="num">0,85%</td><td class="num">€0,80</td><td class="num">€6,76</td><td class="num">1,43</td></tr>
+              <tr><td class="name">[wb] alinhadores | instituto [r]</td><td><span class="status-pill inactive">Inativa</span></td><td>8 leads</td><td class="num">€44,68</td><td class="num">€357,47</td><td class="num">15.986</td><td class="num">35.713</td><td class="num">0,44%</td><td class="num">€2,28</td><td class="num">€10,01</td><td class="num">2,23</td></tr>
+              <tr><td class="name">[LEAD GENS] Facetas</td><td><span class="status-pill inactive">Inativa</span></td><td>30 leads</td><td class="num">€11,87</td><td class="num">€356,14</td><td class="num">27.643</td><td class="num">59.003</td><td class="num">0,86%</td><td class="num">€0,71</td><td class="num">€6,04</td><td class="num">2,13</td></tr>
+              <tr><td class="name">[wb] implantes | escada [I] [tp]</td><td><span class="status-pill inactive">Inativa</span></td><td>2 leads</td><td class="num">€153,43</td><td class="num">€306,85</td><td class="num">34.590</td><td class="num">37.544</td><td class="num">0,70%</td><td class="num">€1,17</td><td class="num">€8,17</td><td class="num">1,09</td></tr>
+              <tr><td class="name">[wb] alinhadores | instituto [d] - I</td><td><span class="status-pill inactive">Inativa</span></td><td>23 leads</td><td class="num">€12,56</td><td class="num">€288,94</td><td class="num">18.754</td><td class="num">53.141</td><td class="num">0,44%</td><td class="num">€1,23</td><td class="num">€5,44</td><td class="num">2,83</td></tr>
+              <tr><td class="name">[LEAD GENS] Alinhadores</td><td><span class="status-pill inactive">Inativa</span></td><td>32 leads</td><td class="num">€3,56</td><td class="num">€113,93</td><td class="num">23.357</td><td class="num">31.377</td><td class="num">0,40%</td><td class="num">€0,92</td><td class="num">€3,63</td><td class="num">1,34</td></tr>
+              <tr><td class="name">[d] alinhadores | instituto - tráfego no perfil</td><td><span class="status-pill inactive">Inativa</span></td><td>3 visitas</td><td class="num">€3,48</td><td class="num">€10,43</td><td class="num">1.617</td><td class="num">2.180</td><td class="num">0,18%</td><td class="num">€2,61</td><td class="num">€4,78</td><td class="num">1,35</td></tr>
+              <tr style="background:rgba(79,70,229,0.04);font-weight:700"><td class="name">TOTAL CA01 (com investimento)</td><td>—</td><td>4.299 leads</td><td class="num">€8,40</td><td class="num">€36.110,37</td><td class="num">—</td><td class="num">4.969.424</td><td class="num">0,90%</td><td class="num">€0,81</td><td class="num">€7,27</td><td class="num">5,89</td></tr>
+              <tr style="opacity:0.55;font-size:13px"><td class="name" colspan="11">+ 4 campanhas sem investimento no trimestre: [TRAFEGO] Alinhadores · [LEAD GENS] Implantes · [LEAD GENS] Implantes — INTERNACIONAL · [LEAD GENS] Facetas 36x</td></tr>
             </tbody>
           </table>
         </div>
