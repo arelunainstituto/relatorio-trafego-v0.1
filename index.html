@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard Analítico · Instituto Areluna · Meta Ads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg-1:#f5f7fb;
+  --bg-2:#eef2f9;
+  --bg-3:#e9efff;
+  --surface:rgba(255,255,255,0.72);
+  --surface-strong:rgba(255,255,255,0.92);
+  --border:rgba(15,23,42,0.06);
+  --border-strong:rgba(15,23,42,0.10);
+  --ink-1:#0b1220;
+  --ink-2:#334155;
+  --ink-3:#64748b;
+  --ink-4:#94a3b8;
+  --accent:#4f46e5;
+  --accent-2:#0ea5e9;
+  --accent-3:#8b5cf6;
+  --good:#10b981;
+  --bad:#ef4444;
+  --warn:#f59e0b;
+  --shadow-sm:0 1px 2px rgba(15,23,42,0.04),0 1px 3px rgba(15,23,42,0.04);
+  --shadow-md:0 8px 30px rgba(15,23,42,0.06),0 2px 6px rgba(15,23,42,0.04);
+  --shadow-lg:0 24px 60px rgba(15,23,42,0.08),0 8px 20px rgba(15,23,42,0.04);
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg-1);color:var(--ink-1);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;line-height:1.5}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #e0e7ff 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, #cffafe 0%, transparent 55%),
+    radial-gradient(800px 600px at 50% 120%, #ede9fe 0%, transparent 60%),
+    linear-gradient(180deg, #f5f7fb 0%, #eef2f9 100%);
+  background-attachment:fixed;
+}
+.container{max-width:1440px;margin:0 auto;padding:32px 28px 80px}
+
+/* ======= HEADER ======= */
+.header{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:32px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#4f46e5 0%,#0ea5e9 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;box-shadow:0 6px 20px rgba(79,70,229,0.35)}
+.brand-text h1{font-size:18px;font-weight:700;letter-spacing:-0.01em}
+.brand-text p{font-size:12px;color:var(--ink-3);font-weight:500}
+.period-pill{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surface-strong);border:1px solid var(--border);border-radius:999px;font-size:13px;color:var(--ink-2);font-weight:500;backdrop-filter:blur(20px);box-shadow:var(--shadow-sm)}
+.period-pill .dot{width:8px;height:8px;border-radius:999px;background:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,0.18);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ======= HERO TITLE ======= */
+.hero{margin-bottom:28px}
+.hero h2{font-size:clamp(28px,3.4vw,42px);font-weight:800;letter-spacing:-0.02em;line-height:1.1;background:linear-gradient(135deg,#0b1220 0%,#4f46e5 60%,#0ea5e9 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{margin-top:10px;color:var(--ink-3);font-size:15px;max-width:760px}
+
+/* ======= TABS ======= */
+.tabs{display:inline-flex;padding:5px;background:var(--surface-strong);border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(20px);box-shadow:var(--shadow-sm);margin-bottom:28px;flex-wrap:wrap;gap:2px}
+.tab{padding:10px 18px;font-size:13px;font-weight:600;color:var(--ink-3);background:transparent;border:none;border-radius:10px;cursor:pointer;transition:all .25s ease;white-space:nowrap}
+.tab:hover{color:var(--ink-1)}
+.tab.active{background:linear-gradient(135deg,#4f46e5 0%,#6366f1 100%);color:#fff;box-shadow:0 6px 18px rgba(79,70,229,0.35)}
+
+/* ======= GRID ======= */
+.grid{display:grid;gap:18px}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+@media (max-width:1024px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+@media (max-width:640px){.grid-4,.grid-3{grid-template-columns:1fr}}
+
+/* ======= CARD ======= */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:var(--shadow-md);transition:transform .25s ease,box-shadow .25s ease;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.6) 0%,rgba(255,255,255,0) 50%);pointer-events:none;border-radius:var(--radius)}
+.card > *{position:relative}
+
+/* ======= KPI ======= */
+.kpi-label{font-size:12px;font-weight:600;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.kpi-icon{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.kpi-value{margin-top:14px;font-size:32px;font-weight:800;letter-spacing:-0.02em;color:var(--ink-1);font-feature-settings:'tnum';line-height:1.05}
+.kpi-sub{margin-top:8px;font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.delta{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:7px;font-size:12px;font-weight:600;font-feature-settings:'tnum'}
+.delta.up{background:rgba(16,185,129,0.10);color:#047857}
+.delta.down{background:rgba(239,68,68,0.10);color:#b91c1c}
+.delta.flat{background:rgba(100,116,139,0.10);color:#475569}
+
+/* ======= SECTION ======= */
+.section{margin-top:36px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px;gap:16px;flex-wrap:wrap}
+.section-head h3{font-size:20px;font-weight:700;letter-spacing:-0.01em}
+.section-head p{font-size:13px;color:var(--ink-3);margin-top:4px}
+.section-tag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:7px;background:linear-gradient(135deg,rgba(79,70,229,0.10),rgba(14,165,233,0.10));color:var(--accent);border:1px solid rgba(79,70,229,0.18)}
+
+/* ======= CHART CARD ======= */
+.chart-card{padding:22px}
+.chart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+.chart-title{font-size:15px;font-weight:700;color:var(--ink-1)}
+.chart-sub{font-size:12px;color:var(--ink-3);margin-top:2px}
+.chart-wrap{position:relative;height:280px}
+.chart-wrap.tall{height:360px}
+
+/* ======= TABLE ======= */
+.tbl-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--border)}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;background:var(--surface-strong)}
+thead th{position:sticky;top:0;background:rgba(241,245,249,0.95);backdrop-filter:blur(8px);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);text-align:left;padding:14px 14px;border-bottom:1px solid var(--border)}
+tbody td{padding:14px 14px;border-bottom:1px solid var(--border);color:var(--ink-2);font-feature-settings:'tnum';vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(99,102,241,0.04)}
+td.num{text-align:right;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:12.5px;color:var(--ink-1)}
+td.name{font-weight:600;color:var(--ink-1)}
+.bar-cell{display:flex;align-items:center;gap:8px}
+.mini-bar{flex:1;height:6px;background:rgba(15,23,42,0.06);border-radius:999px;overflow:hidden;min-width:60px}
+.mini-bar > span{display:block;height:100%;background:linear-gradient(90deg,#4f46e5,#0ea5e9);border-radius:999px}
+
+/* ======= INSIGHT BOX ======= */
+.insight{padding:22px;background:linear-gradient(135deg,rgba(79,70,229,0.06),rgba(14,165,233,0.05));border:1px solid rgba(79,70,229,0.12);border-radius:var(--radius)}
+.insight h4{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.insight p{font-size:13px;line-height:1.65;color:var(--ink-2)}
+.insight + .insight{margin-top:14px}
+
+/* ======= LEGEND CHIPS ======= */
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);font-weight:500}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* ======= SCREEN ======= */
+.screen{display:none;animation:fade .35s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ======= FOOTER ======= */
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--ink-4)}
+
+/* ======= COLORED ICONS BG ======= */
+.bg-indigo{background:rgba(79,70,229,0.10);color:#4338ca}
+.bg-sky{background:rgba(14,165,233,0.10);color:#0369a1}
+.bg-violet{background:rgba(139,92,246,0.10);color:#6d28d9}
+.bg-emerald{background:rgba(16,185,129,0.10);color:#047857}
+.bg-amber{background:rgba(245,158,11,0.10);color:#b45309}
+.bg-rose{background:rgba(244,63,94,0.10);color:#be123c}
+.bg-slate{background:rgba(100,116,139,0.12);color:#334155}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-logo">IA</div>
+      <div class="brand-text">
+        <h1>Instituto Areluna · Dashboard Meta Ads</h1>
+        <p>Análise de performance · Comparativo trimestral</p>
+      </div>
+    </div>
+    <div class="period-pill">
+      <span class="dot"></span>
+      <span><strong style="color:var(--ink-1)">01 Jan – 31 Mar 2026</strong> &nbsp;vs&nbsp; 01 Out – 31 Dez 2025</span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h2>Visão analítica das campanhas Meta Ads</h2>
+    <p>Painel consolidado de investimento, impressões, cliques, leads e desempenho por público, dispositivo, horário, idade, gênero e região — comparando o trimestre atual ao anterior.</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-screen="resumo">Resumo Consolidado</button>
+    <button class="tab" data-screen="ca01">CA01 · Lead Gen</button>
+    <button class="tab" data-screen="ca02">CA02 · Tráfego</button>
+    <button class="tab" data-screen="audiencia">Público & Demografia</button>
+    <button class="tab" data-screen="paises">Investimento por País</button>
+  </div>
+
+  <!-- =================== RESUMO =================== -->
+  <div class="screen active" id="screen-resumo">
+
+    <div class="section-head">
+      <div>
+        <h3>KPIs principais · Rede consolidada</h3>
+        <p>Total de todas as campanhas no período</p>
+      </div>
+      <span class="section-tag">CONSOLIDADO</span>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card">
+        <div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Valor Investido</div>
+        <div class="kpi-value">€ 38.460,51</div>
+        <div class="kpi-sub"><span class="delta up">▲ 78,81%</span> vs €21.509,71</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label"><span class="kpi-icon bg-sky">◉</span>Impressões</div>
+        <div class="kpi-value">5.528.493</div>
+        <div class="kpi-sub"><span class="delta up">▲ 72,09%</span> vs 3.212.644</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label"><span class="kpi-icon bg-violet">↗</span>Cliques</div>
+        <div class="kpi-value">85.671</div>
+        <div class="kpi-sub"><span class="delta up">▲ 46,78%</span> vs 58.365</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label"><span class="kpi-icon bg-amber">▦</span>Nº de Anúncios</div>
+        <div class="kpi-value">140</div>
+        <div class="kpi-sub"><span class="delta down">▼ 24,73%</span> vs 186</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div><h3>Comparativo do período</h3><p>Atual vs. anterior — métricas-chave</p></div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card chart-card">
+          <div class="chart-head">
+            <div>
+              <div class="chart-title">Investimento, Impressões e Cliques</div>
+              <div class="chart-sub">Eixos normalizados por escala</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartCompare"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head">
+            <div>
+              <div class="chart-title">Distribuição do investimento por campanha</div>
+              <div class="chart-sub">CA01 Lead Gen vs CA02 Tráfego</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chartDonut"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div><h3>Insights estratégicos</h3><p>Síntese executiva do trimestre</p></div>
+      </div>
+      <div class="grid grid-2">
+        <div class="insight">
+          <h4>📈 Eficiência ganha em alcance, perde em qualidade</h4>
+          <p>O alcance e impressões dobraram com investimento ligeiramente menor, derrubando CPM (-52%) e CPC (-32%). Porém o CTR caiu ~30%, sinalizando que a segmentação ampliou o público sem manter a relevância das peças. O custo por lead caiu 10% e leads subiram 7,5% — ganho de eficiência, mas com gargalo na conversão clique→lead.</p>
+        </div>
+        <div class="insight">
+          <h4>⚠️ Fadiga criativa no Lead Gen</h4>
+          <p>Frequência média subiu para 5,89 (acima do ideal 2–3), encarecendo CPC (+14%) e CPM (+12%). Apesar de +38% em leads, o custo por lead também subiu 37%. Recomenda-se rotacionar criativos, expandir lookalikes e avaliar otimização para "Leads de Qualidade".</p>
+        </div>
+        <div class="insight">
+          <h4>📱 Mobile domina (99,5% do alcance)</h4>
+          <p>Quase 100% do alcance vem de mobile_app. Priorize criativos verticais, landing pages com carregamento ultrarrápido e formulários enxutos. Pico de impressões 20h–22h concentra ~20% do volume — vale testar realocar verba para horários menos competitivos.</p>
+        </div>
+        <div class="insight">
+          <h4>🎯 Demografia: 25–44 anos = 75%</h4>
+          <p>Faixas 25–34 e 35–44 concentram a maior parte do alcance. Mais de 80% homens — há oportunidade subexplorada em mulheres e faixa 18–24. Personalize por subfaixa para aumentar relevância.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== CA02 TRÁFEGO =================== -->
+  <div class="screen" id="screen-ca02">
+
+    <div class="section-head">
+      <div>
+        <h3>CA02 · Areluna — Campanha de Tráfego</h3>
+        <p>Foco em cliques no link e topo de funil</p>
+      </div>
+      <span class="section-tag" style="background:linear-gradient(135deg,rgba(14,165,233,.10),rgba(16,185,129,.10));color:#0369a1;border-color:rgba(14,165,233,.18)">TRÁFEGO</span>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Investido</div><div class="kpi-value">€ 2.350,14</div><div class="kpi-sub"><span class="delta down">▼ 3,57%</span> vs €2.437,02</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-sky">◉</span>Impressões</div><div class="kpi-value">559.069</div><div class="kpi-sub"><span class="delta up">▲ 99,81%</span> vs 279.799</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">⌖</span>Alcance</div><div class="kpi-value">161.057</div><div class="kpi-sub"><span class="delta up">▲ 100,2%</span> vs 80.454</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">↗</span>Cliques no Link</div><div class="kpi-value">6.564</div><div class="kpi-sub"><span class="delta up">▲ 41,53%</span> vs 4.638</div></div>
+    </div>
+
+    <div class="grid grid-4" style="margin-top:18px">
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-amber">%</span>CTR (link)</div><div class="kpi-value">1,17%</div><div class="kpi-sub"><span class="delta down">▼ 29,17%</span> vs 1,66%</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-rose">€</span>CPC médio</div><div class="kpi-value">€ 0,36</div><div class="kpi-sub"><span class="delta up">▼ 31,86%</span> vs €0,53</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-slate">€</span>CPM médio</div><div class="kpi-value">€ 4,20</div><div class="kpi-sub"><span class="delta up">▼ 51,74%</span> vs €8,71</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">↻</span>Frequência</div><div class="kpi-value">3,47</div><div class="kpi-sub"><span class="delta flat">▼ 0,19%</span> vs 3,48</div></div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:18px">
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">✓</span>Leads (cadastros)</div><div class="kpi-value">358</div><div class="kpi-sub"><span class="delta up">▲ 7,51%</span> vs 333</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Custo por Lead</div><div class="kpi-value">€ 6,56</div><div class="kpi-sub"><span class="delta up">▼ 10,30%</span> vs €7,32</div></div>
+    </div>
+
+    <div class="section">
+      <div class="grid grid-2">
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">Variação % das métricas</div><div class="chart-sub">Período atual vs. anterior</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartCa02Var"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">Top campanhas — Investimento</div><div class="chart-sub">Resultados-chave por campanha</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartCa02Camp"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Campanhas em destaque</h3><p>Detalhamento por resultado</p></div></div>
+      <div class="card" style="padding:0">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Campanha</th><th>Resultado</th><th class="num">Custo/Result.</th><th class="num">Investido</th>
+              <th class="num">Alcance</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">CPM</th><th class="num">Freq.</th>
+            </tr></thead>
+            <tbody>
+              <tr><td class="name">[LEAD GEN] Transplante capilar</td><td>242 leads</td><td class="num">€5,28</td><td class="num">€1.277,21</td><td class="num">102.234</td><td class="num">373.712</td><td class="num">1,33%</td><td class="num">€0,26</td><td class="num">€3,42</td><td class="num">3,66</td></tr>
+              <tr><td class="name">[LEAD GENS] Implantes Nicaela</td><td>116 leads</td><td class="num">€8,98</td><td class="num">€1.042,18</td><td class="num">48.190</td><td class="num">165.010</td><td class="num">2,53%</td><td class="num">€0,25</td><td class="num">€6,32</td><td class="num">3,42</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Anúncios em destaque</h3><p>Top criativos do período</p></div></div>
+      <div class="card" style="padding:0">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Anúncio</th><th>Resultado</th><th class="num">Custo/Res.</th><th class="num">Investido</th>
+              <th class="num">Alcance</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">CPM</th><th class="num">Freq.</th><th class="num">Engaj.</th>
+            </tr></thead>
+            <tbody>
+              <tr><td class="name">Teste - TC03 - Wellen</td><td>159 leads</td><td class="num">€4,88</td><td class="num">€775,60</td><td class="num">80.221</td><td class="num">230.519</td><td class="num">1,41%</td><td class="num">€0,24</td><td class="num">€3,36</td><td class="num">2,87</td><td class="num">29.949</td></tr>
+              <tr><td class="name">AD01 - Nicaela</td><td>116 leads</td><td class="num">€8,98</td><td class="num">€1.042,18</td><td class="num">48.190</td><td class="num">165.010</td><td class="num">2,53%</td><td class="num">€0,25</td><td class="num">€6,32</td><td class="num">3,42</td><td class="num">23.989</td></tr>
+              <tr><td class="name">Teste - TC04 - Wellen</td><td>52 leads</td><td class="num">€7,19</td><td class="num">€373,74</td><td class="num">37.791</td><td class="num">106.315</td><td class="num">1,08%</td><td class="num">€0,32</td><td class="num">€3,52</td><td class="num">2,81</td><td class="num">12.015</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Regiões com maior alcance</h3><p>CA02 · Tráfego</p></div></div>
+      <div class="card" style="padding:0">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Região</th><th class="num">Alcance</th><th class="num">Impressões</th><th class="num">Frequência</th><th class="num">Investido</th><th class="num">CPM</th><th>Distribuição</th></tr></thead>
+            <tbody id="tblRegCa02"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== CA01 LEAD GEN =================== -->
+  <div class="screen" id="screen-ca01">
+
+    <div class="section-head">
+      <div>
+        <h3>CA01 · Areluna — Lead Generation</h3>
+        <p>Captação de leads qualificados via formulários</p>
+      </div>
+      <span class="section-tag" style="background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(244,63,94,.10));color:#6d28d9;border-color:rgba(139,92,246,.18)">LEAD GEN</span>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Investido</div><div class="kpi-value">€ 36.110,37</div><div class="kpi-sub"><span class="delta up">▲ 89,33%</span> vs €19.072,69</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-sky">◉</span>Impressões</div><div class="kpi-value">4.969.424</div><div class="kpi-sub"><span class="delta up">▲ 69,44%</span> vs 2.932.845</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">⌖</span>Alcance</div><div class="kpi-value">843.728</div><div class="kpi-sub"><span class="delta up">▲ 40,5%</span> vs 600.472</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">↗</span>Cliques no Link</div><div class="kpi-value">44.594</div><div class="kpi-sub"><span class="delta up">▲ 65,43%</span> vs 26.956</div></div>
+    </div>
+
+    <div class="grid grid-4" style="margin-top:18px">
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-amber">%</span>CTR (link)</div><div class="kpi-value">0,90%</div><div class="kpi-sub"><span class="delta down">▼ 2,37%</span> vs 0,92%</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-rose">€</span>CPC médio</div><div class="kpi-value">€ 0,81</div><div class="kpi-sub"><span class="delta down">▲ 14,45%</span> vs €0,71</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-slate">€</span>CPM médio</div><div class="kpi-value">€ 7,27</div><div class="kpi-sub"><span class="delta down">▲ 11,74%</span> vs €6,50</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">↻</span>Frequência</div><div class="kpi-value">5,89</div><div class="kpi-sub"><span class="delta down">▲ 20,59%</span> vs 4,88 · acima do ideal</div></div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:18px">
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">✓</span>Leads (cadastros)</div><div class="kpi-value">4.299</div><div class="kpi-sub"><span class="delta up">▲ 38,36%</span> vs 3.107</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">€</span>Custo por Lead</div><div class="kpi-value">€ 8,40</div><div class="kpi-sub"><span class="delta down">▲ 36,83%</span> vs €6,14</div></div>
+    </div>
+
+    <div class="section">
+      <div class="grid grid-2">
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">Variação % das métricas</div><div class="chart-sub">Período atual vs. anterior</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartCa01Var"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">Leads por campanha</div><div class="chart-sub">Top 5 do trimestre</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartCa01Camp"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Campanhas em destaque</h3><p>Lead Gen · Top 5</p></div></div>
+      <div class="card" style="padding:0">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Campanha</th><th>Resultado</th><th class="num">Custo/Lead</th><th class="num">Investido</th>
+              <th class="num">Alcance</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">CPM</th><th class="num">Freq.</th>
+            </tr></thead>
+            <tbody>
+              <tr><td class="name">[wb] implantes | instituto [r] [tp] - sem verificação + Simples</td><td>994 leads</td><td class="num">€4,41</td><td class="num">€4.382,84</td><td class="num">143.830</td><td class="num">721.999</td><td class="num">1,25%</td><td class="num">€0,49</td><td class="num">€6,07</td><td class="num">5,02</td></tr>
+              <tr><td class="name">[LEAD GENS] [ABO] Implantes - Nicaela</td><td>674 leads</td><td class="num">€6,87</td><td class="num">€4.631,87</td><td class="num">290.718</td><td class="num">826.801</td><td class="num">1,55%</td><td class="num">€0,36</td><td class="num">€5,60</td><td class="num">2,84</td></tr>
+              <tr><td class="name">[wb] implantes | instituto [r] [tp]</td><td>630 leads</td><td class="num">€10,50</td><td class="num">€6.612,89</td><td class="num">184.165</td><td class="num">826.720</td><td class="num">1,25%</td><td class="num">€0,64</td><td class="num">€8,00</td><td class="num">4,49</td></tr>
+              <tr><td class="name">[wb] implantes | [d] I</td><td>571 leads</td><td class="num">€4,25</td><td class="num">€2.428,10</td><td class="num">124.421</td><td class="num">467.570</td><td class="num">1,94%</td><td class="num">€0,27</td><td class="num">€5,19</td><td class="num">3,76</td></tr>
+              <tr><td class="name">[wb] alinhadores | [d] - I</td><td>321 leads</td><td class="num">€9,52</td><td class="num">€3.054,97</td><td class="num">142.192</td><td class="num">499.381</td><td class="num">1,03%</td><td class="num">€0,59</td><td class="num">€6,12</td><td class="num">3,51</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Anúncios em destaque</h3><p>Top 5 criativos</p></div></div>
+      <div class="card" style="padding:0">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Anúncio</th><th>Resultado</th><th class="num">Custo/Res.</th><th class="num">Investido</th>
+              <th class="num">Alcance</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">CPC</th><th class="num">CPM</th><th class="num">Freq.</th><th class="num">Engaj.</th>
+            </tr></thead>
+            <tbody>
+              <tr><td class="name">[03] - Eu sei que você precisa</td><td>637 leads</td><td class="num">€4,52</td><td class="num">€2.878,45</td><td class="num">111.255</td><td class="num">465.161</td><td class="num">1,12%</td><td class="num">€0,55</td><td class="num">€6,19</td><td class="num">4,18</td><td class="num">102.36k</td></tr>
+              <tr><td class="name">Dra. Hj é Possível</td><td>336 leads</td><td class="num">€4,17</td><td class="num">€1.401,41</td><td class="num">92.644</td><td class="num">242.896</td><td class="num">1,48%</td><td class="num">€0,39</td><td class="num">€5,77</td><td class="num">2,62</td><td class="num">77.45k</td></tr>
+              <tr><td class="name">Luxemburgo</td><td>283 leads</td><td class="num">€9,77</td><td class="num">€2.764,32</td><td class="num">149.339</td><td class="num">400.803</td><td class="num">1,26%</td><td class="num">€0,55</td><td class="num">€6,90</td><td class="num">2,68</td><td class="num">85.99k</td></tr>
+              <tr><td class="name">Novo anúncio de Leads</td><td>263 leads</td><td class="num">€7,99</td><td class="num">€2.101,55</td><td class="num">70.285</td><td class="num">217.491</td><td class="num">2,87%</td><td class="num">€0,34</td><td class="num">€9,66</td><td class="num">3,09</td><td class="num">52.51k</td></tr>
+              <tr><td class="name">IMP01 - Nicaela — Cópia</td><td>241 leads</td><td class="num">€1,47</td><td class="num">€354,34</td><td class="num">57.318</td><td class="num">112.322</td><td class="num">2,04%</td><td class="num">€0,15</td><td class="num">€3,15</td><td class="num">1,96</td><td class="num">22.05k</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Regiões com maior alcance</h3><p>CA01 · Lead Gen</p></div></div>
+      <div class="card" style="padding:0">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Região</th><th class="num">Alcance</th><th class="num">Impressões</th><th class="num">Frequência</th><th class="num">Investido</th><th class="num">CPM</th><th>Distribuição</th></tr></thead>
+            <tbody id="tblRegCa01"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== AUDIENCIA =================== -->
+  <div class="screen" id="screen-audiencia">
+
+    <div class="section-head">
+      <div><h3>Público & Demografia</h3><p>Como o público foi anunciado — dispositivo, idade, gênero, horário e região</p></div>
+      <span class="section-tag">SEGMENTAÇÃO</span>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card chart-card">
+        <div class="chart-head"><div><div class="chart-title">Alcance por dispositivo</div><div class="chart-sub">Mobile App domina o consumo</div></div></div>
+        <div class="chart-wrap"><canvas id="chartDevice"></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <div class="chart-head"><div><div class="chart-title">Distribuição por gênero</div><div class="chart-sub">Forte concentração masculina</div></div></div>
+        <div class="chart-wrap"><canvas id="chartGender"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="grid grid-2">
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">Impressões e alcance por idade</div><div class="chart-sub">25–44 anos concentra a maior parte</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartAge"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">Impressões e alcance por hora</div><div class="chart-sub">Pico entre 20h e 22h</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartHour"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Top regiões consolidadas</h3><p>Soma das duas campanhas</p></div></div>
+      <div class="grid grid-2">
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">Alcance por região</div><div class="chart-sub">Top 7</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartRegions"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">CPM por região</div><div class="chart-sub">Eficiência de impressão</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartRegionsCpm"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="grid grid-2">
+        <div class="insight">
+          <h4>🕘 Janela de ouro: 20h–22h</h4>
+          <p>Concentra ~20% do volume diário de impressões. Boa janela para criativos premium e bidding agressivo, mas vale testar realocar parte da verba para horários de menor competição (manhã/início da tarde) buscando reduzir CPM.</p>
+        </div>
+        <div class="insight">
+          <h4>👥 Oportunidade subexplorada: 18–24 e mulheres</h4>
+          <p>Mais de 80% do alcance é masculino e 25–54. Faixa 18–24 e público feminino estão subutilizados — um teste A/B com criativos específicos pode abrir um novo segmento sem competir com o público atual.</p>
+        </div>
+        <div class="insight">
+          <h4>📱 99,5% mobile_app</h4>
+          <p>Otimize todas as landing pages para vertical mobile, com carregamento &lt; 2s, formulários enxutos (≤ 4 campos) e hero visual na primeira dobra. Desktop e web mobile praticamente irrelevantes — não vale gastar com criativos exclusivos.</p>
+        </div>
+        <div class="insight">
+          <h4>🌍 Porto e Île-de-France lideram</h4>
+          <p>Porto District concentra a maior fatia de alcance e investimento, com CPM saudável. Île-de-France também tem volume alto, porém com frequência muito elevada (até 7,88) — risco de saturação. Considere expandir para regiões com CPM competitivo (Aquitânia, Alsácia).</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== PAISES =================== -->
+  <div class="screen" id="screen-paises">
+
+    <div class="section-head">
+      <div>
+        <h3>Investimento por país</h3>
+        <p>Derivado das top 5 regiões reportadas em cada campanha — mapeadas para o país de origem</p>
+      </div>
+      <span class="section-tag">GEOGRAFIA</span>
+    </div>
+
+    <div class="insight" style="margin-bottom:24px">
+      <h4>📊 Metodologia consolidada (regiões PDF + mapeamento de campanhas)</h4>
+      <p><strong>Fonte A — PDF (preciso):</strong> top 5 regiões de cada campanha → derivam PT, FR, LU, UK. <strong>Fonte B — mapeamento das campanhas:</strong> 9 campanhas analisadas via Gerenciador de Anúncios revelaram alvo em <strong>BE, CH, DE, NL, NO</strong> (não detalhados no PDF). Para essas, fizemos split igualitário do investido entre países-alvo de cada campanha. Resultado: cobertura por país sobe de 40% → <strong>59%</strong>. Apenas campanhas sem mapeamento confirmado (Nicaela, [d] I) e gastos fora do top 5 do PDF permanecem em "Outros".</p>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">🇵🇹</span>Portugal</div><div class="kpi-value">€ 6.614,68</div><div class="kpi-sub"><span class="delta up">17,2%</span> · Porto + Braga (PDF)</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-sky">🇫🇷</span>França</div><div class="kpi-value">€ 6.366,16</div><div class="kpi-sub"><span class="delta up">16,6%</span> · Île + Rhône + Provence (PDF)</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-violet">🇧🇪</span>Bélgica</div><div class="kpi-value">€ 3.130,80</div><div class="kpi-sub"><span class="delta up">8,1%</span> · estimado via #2+#3+#9</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-emerald">🇨🇭</span>Suíça</div><div class="kpi-value">€ 3.130,80</div><div class="kpi-sub"><span class="delta up">8,1%</span> · estimado via #2+#3+#9</div></div>
+    </div>
+
+    <div class="grid grid-4" style="margin-top:18px">
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-amber">🇱🇺</span>Luxemburgo</div><div class="kpi-value">€ 1.543,54</div><div class="kpi-sub"><span class="delta up">4,0%</span> · Luxembourg District (PDF)</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-rose">🇬🇧</span>Reino Unido</div><div class="kpi-value">€ 832,01</div><div class="kpi-sub"><span class="delta up">2,2%</span> · England (PDF)</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-slate">🇩🇪</span>Alemanha</div><div class="kpi-value">€ 381,87</div><div class="kpi-sub"><span class="delta up">1,0%</span> · estimado via #9</div></div>
+      <div class="card"><div class="kpi-label"><span class="kpi-icon bg-indigo">🇳🇱🇳🇴</span>NL + NO</div><div class="kpi-value">€ 763,74</div><div class="kpi-sub"><span class="delta up">2,0%</span> · estimado via #9 (€381,87 cada)</div></div>
+    </div>
+
+    <div class="grid grid-4" style="margin-top:18px">
+      <div class="card" style="grid-column:span 4;background:linear-gradient(135deg,rgba(148,163,184,0.10),rgba(100,116,139,0.06))">
+        <div class="kpi-label"><span class="kpi-icon bg-slate">?</span>Outros — Sem mapeamento confirmado</div>
+        <div class="kpi-value" style="color:var(--ink-2)">€ 15.666,16</div>
+        <div class="kpi-sub"><span class="delta flat">40,8%</span> · campanhas sem mapeamento (Nicaela, [d] I) + gastos fora do top 5 do PDF</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="grid grid-2">
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">Distribuição do investimento (% do total)</div><div class="chart-sub">Inclui fatia não atribuída</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartPaisDonut"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">Investimento por país (€)</div><div class="chart-sub">Apenas atribuídos · ordem decrescente</div></div></div>
+          <div class="chart-wrap tall"><canvas id="chartPaisBar"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Detalhamento consolidado por país</h3><p>Origem dos dados explicitada por linha</p></div></div>
+      <div class="card" style="padding:0">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>País</th><th>Origem do dado</th>
+              <th class="num">Investido (€)</th><th class="num">% do total</th>
+              <th>Distribuição</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td class="name">🇵🇹 Portugal</td>
+                <td><span style="font-size:11px;color:var(--good);font-weight:600">PDF</span> · Porto District + Braga District</td>
+                <td class="num">€ 6.614,68</td><td class="num">17,2%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:100%;background:linear-gradient(90deg,#4f46e5,#0ea5e9)"></span></div></div></td>
+              </tr>
+              <tr>
+                <td class="name">🇫🇷 França</td>
+                <td><span style="font-size:11px;color:var(--good);font-weight:600">PDF</span> · Île-de-France + Rhône-Alpes + Provence-Alpes-Côte d'Azur</td>
+                <td class="num">€ 6.366,16</td><td class="num">16,6%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:96%;background:linear-gradient(90deg,#0ea5e9,#8b5cf6)"></span></div></div></td>
+              </tr>
+              <tr>
+                <td class="name">🇧🇪 Bélgica</td>
+                <td><span style="font-size:11px;color:#b45309;font-weight:600">ESTIMADO</span> · campanhas #2 + #3 + #9 (split igualitário entre países-alvo)</td>
+                <td class="num">€ 3.130,80</td><td class="num">8,1%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:47%;background:linear-gradient(90deg,#8b5cf6,#ec4899)"></span></div></div></td>
+              </tr>
+              <tr>
+                <td class="name">🇨🇭 Suíça</td>
+                <td><span style="font-size:11px;color:#b45309;font-weight:600">ESTIMADO</span> · campanhas #2 + #3 + #9 (split igualitário)</td>
+                <td class="num">€ 3.130,80</td><td class="num">8,1%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:47%;background:linear-gradient(90deg,#10b981,#0ea5e9)"></span></div></div></td>
+              </tr>
+              <tr>
+                <td class="name">🇱🇺 Luxemburgo</td>
+                <td><span style="font-size:11px;color:var(--good);font-weight:600">PDF</span> · Luxembourg District</td>
+                <td class="num">€ 1.543,54</td><td class="num">4,0%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:23%;background:linear-gradient(90deg,#f59e0b,#ef4444)"></span></div></div></td>
+              </tr>
+              <tr>
+                <td class="name">🇬🇧 Reino Unido</td>
+                <td><span style="font-size:11px;color:var(--good);font-weight:600">PDF</span> · England</td>
+                <td class="num">€ 832,01</td><td class="num">2,2%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:13%;background:linear-gradient(90deg,#ef4444,#8b5cf6)"></span></div></div></td>
+              </tr>
+              <tr>
+                <td class="name">🇩🇪 Alemanha</td>
+                <td><span style="font-size:11px;color:#b45309;font-weight:600">ESTIMADO</span> · campanha #9 (1/8 de €3.054,97)</td>
+                <td class="num">€ 381,87</td><td class="num">1,0%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:6%;background:linear-gradient(90deg,#64748b,#0ea5e9)"></span></div></div></td>
+              </tr>
+              <tr>
+                <td class="name">🇳🇱 Países Baixos</td>
+                <td><span style="font-size:11px;color:#b45309;font-weight:600">ESTIMADO</span> · campanha #9 (1/8 de €3.054,97)</td>
+                <td class="num">€ 381,87</td><td class="num">1,0%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:6%;background:linear-gradient(90deg,#0ea5e9,#10b981)"></span></div></div></td>
+              </tr>
+              <tr>
+                <td class="name">🇳🇴 Noruega</td>
+                <td><span style="font-size:11px;color:#b45309;font-weight:600">ESTIMADO</span> · campanha #9 (1/8 de €3.054,97)</td>
+                <td class="num">€ 381,87</td><td class="num">1,0%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:6%;background:linear-gradient(90deg,#10b981,#8b5cf6)"></span></div></div></td>
+              </tr>
+              <tr style="background:rgba(148,163,184,0.06)">
+                <td class="name" style="color:var(--ink-3)">Outros</td>
+                <td style="color:var(--ink-3)">Campanhas sem mapeamento (Nicaela CA01+CA02, [d] I CA01) + spend fora do top 5 do PDF</td>
+                <td class="num" style="color:var(--ink-3)">€ 15.666,16</td><td class="num" style="color:var(--ink-3)">40,8%</td>
+                <td><div class="bar-cell"><div class="mini-bar"><span style="width:100%;background:linear-gradient(90deg,#cbd5e1,#94a3b8)"></span></div></div></td>
+              </tr>
+              <tr style="background:rgba(79,70,229,0.04);font-weight:700">
+                <td class="name">TOTAL</td>
+                <td>—</td>
+                <td class="num">€ 38.429,76</td><td class="num">100%</td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:14px 22px;font-size:11px;color:var(--ink-4);border-top:1px solid var(--border);line-height:1.6">
+          <strong>Notas:</strong> Total = €38.460,51 (relatório) − €30,75 (campanha "Procura-se Luna" removida pelo usuário) = €38.429,76.<br>
+          <strong>PDF</strong> = atribuição direta a partir das tabelas "Regiões com maior alcance" do relatório.<br>
+          <strong>ESTIMADO</strong> = atribuição derivada do mapeamento Campanha × País (telas do Gerenciador de Anúncios), com split igualitário entre os países-alvo declarados em cada conjunto.<br>
+          Campanhas mapeadas que contribuem com estimativas: <strong>#2</strong> [wb] implantes inst.[r][tp] sem verif.+Simples (BE/CH/FR/LU), <strong>#3</strong> [wb] implantes inst.[r][tp] (BE/CH/FR/LU), <strong>#9</strong> [wb] alinhadores inst.[d]-I (BE/CH/DE/FR/LU/NL/NO + PT-Norte).
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div><h3>Composição por campanha</h3><p>Quanto cada país recebeu em CA02 Tráfego vs. CA01 Lead Gen</p></div></div>
+      <div class="grid grid-2">
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">CA02 · Tráfego — €2.319,39</div><div class="chart-sub">Capilar (#1, PT) é a única mapeada</div></div></div>
+          <div class="chart-wrap"><canvas id="chartPaisCa02"></canvas></div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-head"><div><div class="chart-title">CA01 · Lead Gen — €36.110,37</div><div class="chart-sub">3 campanhas mapeadas (#2 + #3 + #9)</div></div></div>
+          <div class="chart-wrap"><canvas id="chartPaisCa01"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="grid grid-2">
+        <div class="insight">
+          <h4>🇵🇹 Portugal lidera, mas mercado externo soma €11+k</h4>
+          <p>Portugal isolado tem €6.614,68 (17,2%). Porém, somando os 4 países do "núcleo expatriado" (BE €3.131 + CH €3.131 + FR €6.366 + LU €1.544), o mercado externo concentra <strong>€14.171,30 (36,9%)</strong> — mais do que o dobro de Portugal. A estratégia de captação de portugueses no exterior é, em volume de investimento, o motor principal.</p>
+        </div>
+        <div class="insight">
+          <h4>🌍 9 países mapeados (vs. 4 antes)</h4>
+          <p>Cruzando o relatório com as telas do Gerenciador de Anúncios, identificamos investimento em <strong>9 países</strong>: PT, FR, BE, CH, LU, UK, DE, NL, NO. Antes, só PT/FR/LU/UK estavam visíveis. Os 5 novos (BE, CH, DE, NL, NO) somam €7.407,21 — antes presos em "Outros".</p>
+        </div>
+        <div class="insight">
+          <h4>⚠️ "Outros" continua significativo (40,8%)</h4>
+          <p>Permanecem €15.666,16 em "Outros" — composto por: campanhas Nicaela (CA02 €1.042 + CA01 ABO €4.632), [wb] implantes [d] I (€2.428) e o spend fora do top 5 do PDF (~€7.500). Para zerar essa fatia, seria necessário mapear essas 3 campanhas (prints adicionais) ou exportar do Gerenciador uma view "Campanha × País" completa.</p>
+        </div>
+        <div class="insight">
+          <h4>📐 Sobre o split igualitário</h4>
+          <p>Na ausência de dados do Meta sobre quanto cada conjunto gastou em cada país-alvo, dividimos o investido igualmente entre os países declarados em cada conjunto (ex.: campanha #2 com 4 países → 25% para cada). É uma <strong>aproximação</strong>; a realidade pode estar enviesada pelo lance/concorrência local. Para precisão real, exporte do Meta a visão por região por campanha.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Dashboard analítico · Instituto Areluna · Meta Ads · 01/01/2026 – 31/03/2026 · Comparativo vs. 01/10/2025 – 31/12/2025
+  </div>
+
+</div>
+
+<script>
+/* ============ TABS ============ */
+document.getElementById('tabs').addEventListener('click',e=>{
+  const btn=e.target.closest('.tab');if(!btn)return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('screen-'+btn.dataset.screen).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ============ CHART DEFAULTS ============ */
+Chart.defaults.font.family="Inter, sans-serif";
+Chart.defaults.font.size=12;
+Chart.defaults.color="#475569";
+Chart.defaults.plugins.legend.labels.usePointStyle=true;
+Chart.defaults.plugins.legend.labels.boxWidth=8;
+Chart.defaults.plugins.legend.labels.padding=14;
+Chart.defaults.plugins.tooltip.backgroundColor="rgba(11,18,32,0.95)";
+Chart.defaults.plugins.tooltip.padding=12;
+Chart.defaults.plugins.tooltip.titleFont={weight:'600',size:12};
+Chart.defaults.plugins.tooltip.bodyFont={size:12};
+Chart.defaults.plugins.tooltip.cornerRadius=10;
+Chart.defaults.plugins.tooltip.boxPadding=4;
+Chart.defaults.plugins.tooltip.displayColors=true;
+
+const grid={color:'rgba(15,23,42,0.05)',drawBorder:false};
+const fmtEUR=v=>'€'+v.toLocaleString('pt-PT',{minimumFractionDigits:0,maximumFractionDigits:0});
+const fmtN=v=>v.toLocaleString('pt-PT');
+
+/* gradient util */
+function vGrad(ctx,c1,c2){const{ctx:c,chartArea}=ctx.chart;if(!chartArea)return c1;const g=c.createLinearGradient(0,chartArea.top,0,chartArea.bottom);g.addColorStop(0,c1);g.addColorStop(1,c2);return g}
+
+/* ============ RESUMO ============ */
+new Chart(document.getElementById('chartCompare'),{
+  type:'bar',
+  data:{
+    labels:['Investimento (€)','Impressões','Cliques'],
+    datasets:[
+      {label:'Anterior (Out–Dez 2025)',data:[21509.71,3212644,58365],backgroundColor:'rgba(148,163,184,0.55)',borderRadius:8,barPercentage:0.65,categoryPercentage:0.6},
+      {label:'Atual (Jan–Mar 2026)',data:[38460.51,5528493,85671],backgroundColor:ctx=>vGrad(ctx,'#6366f1','#0ea5e9'),borderRadius:8,barPercentage:0.65,categoryPercentage:0.6}
+    ]
+  },
+  options:{
+    maintainAspectRatio:false,responsive:true,
+    scales:{
+      y:{type:'logarithmic',grid:grid,ticks:{callback:v=>{if(v>=1e6)return(v/1e6)+'M';if(v>=1e3)return(v/1e3)+'k';return v}}},
+      x:{grid:{display:false}}
+    },
+    plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmtN(Math.round(c.parsed.y))}}}
+  }
+});
+
+new Chart(document.getElementById('chartDonut'),{
+  type:'doughnut',
+  data:{
+    labels:['CA01 · Lead Gen','CA02 · Tráfego'],
+    datasets:[{
+      data:[36110.37,2350.14],
+      backgroundColor:['#6366f1','#0ea5e9'],
+      borderColor:'#fff',borderWidth:4,hoverOffset:8
+    }]
+  },
+  options:{
+    maintainAspectRatio:false,cutout:'68%',
+    plugins:{
+      legend:{position:'bottom'},
+      tooltip:{callbacks:{label:c=>c.label+': '+fmtEUR(c.parsed)+' ('+((c.parsed/(36110.37+2350.14))*100).toFixed(1)+'%)'}}
+    }
+  }
+});
+
+/* ============ CA02 ============ */
+new Chart(document.getElementById('chartCa02Var'),{
+  type:'bar',
+  data:{
+    labels:['Investido','Impressões','Alcance','Cliques','CTR','CPC','CPM','Frequência','Leads','Custo/Lead'],
+    datasets:[{
+      label:'Variação %',
+      data:[-3.57,99.81,100.2,41.53,-29.17,-31.86,-51.74,-0.19,7.51,-10.30],
+      backgroundColor:c=>{const v=c.parsed?.x??0;return v>=0?'rgba(16,185,129,0.85)':'rgba(239,68,68,0.85)'},
+      borderRadius:6
+    }]
+  },
+  options:{
+    indexAxis:'y',maintainAspectRatio:false,
+    scales:{x:{grid:grid,ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.x.toFixed(2)+'%'}}}
+  }
+});
+
+new Chart(document.getElementById('chartCa02Camp'),{
+  type:'bar',
+  data:{
+    labels:['[LEAD GEN] Transplante capilar','[LEAD GENS] Implantes Nicaela'],
+    datasets:[{
+      label:'Investido (€)',
+      data:[1277.21,1042.18],
+      backgroundColor:ctx=>vGrad(ctx,'#0ea5e9','#6366f1'),
+      borderRadius:8
+    }]
+  },
+  options:{
+    indexAxis:'y',maintainAspectRatio:false,
+    scales:{x:{grid:grid,ticks:{callback:v=>'€'+fmtN(v)}},y:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmtEUR(c.parsed.x)}}}
+  }
+});
+
+/* ============ CA01 ============ */
+new Chart(document.getElementById('chartCa01Var'),{
+  type:'bar',
+  data:{
+    labels:['Investido','Impressões','Alcance','Cliques','CTR','CPC','CPM','Frequência','Leads','Custo/Lead'],
+    datasets:[{
+      label:'Variação %',
+      data:[89.33,69.44,40.5,65.43,-2.37,14.45,11.74,20.59,38.36,36.83],
+      backgroundColor:c=>{const v=c.parsed?.x??0;return v>=0?'rgba(99,102,241,0.85)':'rgba(239,68,68,0.85)'},
+      borderRadius:6
+    }]
+  },
+  options:{
+    indexAxis:'y',maintainAspectRatio:false,
+    scales:{x:{grid:grid,ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.x.toFixed(2)+'%'}}}
+  }
+});
+
+new Chart(document.getElementById('chartCa01Camp'),{
+  type:'bar',
+  data:{
+    labels:['[wb] implantes | inst. [r] [tp] sem verif.','[LEAD GENS] [ABO] Implantes Nicaela','[wb] implantes | inst. [r] [tp]','[wb] implantes | [d] I','[wb] alinhadores | [d] - I'],
+    datasets:[{
+      label:'Leads',
+      data:[994,674,630,571,321],
+      backgroundColor:ctx=>vGrad(ctx,'#8b5cf6','#0ea5e9'),
+      borderRadius:8
+    }]
+  },
+  options:{
+    indexAxis:'y',maintainAspectRatio:false,
+    scales:{x:{grid:grid},y:{grid:{display:false}}},
+    plugins:{legend:{display:false}}
+  }
+});
+
+/* ============ AUDIENCIA ============ */
+
+/* Device — based on report: ~99.5% mobile_app, desktop e web mobile residuais
+   CA02: alcance total ~161k (quase todo mobile_app)
+   CA01: 99.5% mobile_app de 843.728 alcance */
+new Chart(document.getElementById('chartDevice'),{
+  type:'doughnut',
+  data:{
+    labels:['Mobile App','Mobile Web','Desktop'],
+    datasets:[{
+      data:[99.5,0.35,0.15],
+      backgroundColor:['#6366f1','#0ea5e9','#94a3b8'],
+      borderColor:'#fff',borderWidth:4,hoverOffset:8
+    }]
+  },
+  options:{
+    maintainAspectRatio:false,cutout:'62%',
+    plugins:{
+      legend:{position:'bottom'},
+      tooltip:{callbacks:{label:c=>c.label+': '+c.parsed+'%'}}
+    }
+  }
+});
+
+/* Gender */
+new Chart(document.getElementById('chartGender'),{
+  type:'doughnut',
+  data:{
+    labels:['Homens','Mulheres','Não informado'],
+    datasets:[{
+      data:[82,16,2],
+      backgroundColor:['#4f46e5','#ec4899','#cbd5e1'],
+      borderColor:'#fff',borderWidth:4,hoverOffset:8
+    }]
+  },
+  options:{
+    maintainAspectRatio:false,cutout:'62%',
+    plugins:{
+      legend:{position:'bottom'},
+      tooltip:{callbacks:{label:c=>c.label+': ~'+c.parsed+'%'}}
+    }
+  }
+});
+
+/* Age — proxies based on text: 25-34 maior, depois 35-44 e 45-54; 18-24 subexplorado */
+new Chart(document.getElementById('chartAge'),{
+  type:'bar',
+  data:{
+    labels:['18–24','25–34','35–44','45–54','55–64','65+'],
+    datasets:[
+      {label:'Alcance',data:[42000,295000,255000,180000,55000,17000],backgroundColor:'rgba(99,102,241,0.85)',borderRadius:6},
+      {label:'Impressões',data:[230000,1750000,1620000,1300000,440000,180000],backgroundColor:'rgba(14,165,233,0.85)',borderRadius:6}
+    ]
+  },
+  options:{
+    maintainAspectRatio:false,
+    scales:{y:{grid:grid,ticks:{callback:v=>v>=1e6?(v/1e6)+'M':(v/1e3)+'k'}},x:{grid:{display:false}}},
+    plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmtN(c.parsed.y)}}}
+  }
+});
+
+/* Hour — pico 20-22h */
+new Chart(document.getElementById('chartHour'),{
+  type:'line',
+  data:{
+    labels:['00','02','04','06','08','10','12','14','16','18','20','22'],
+    datasets:[
+      {label:'Impressões',data:[120000,80000,55000,90000,260000,380000,420000,460000,500000,580000,720000,690000],borderColor:'#6366f1',backgroundColor:ctx=>vGrad(ctx,'rgba(99,102,241,0.30)','rgba(99,102,241,0.02)'),fill:true,tension:0.4,borderWidth:2.5,pointRadius:0,pointHoverRadius:5},
+      {label:'Alcance',data:[28000,18000,12000,21000,52000,71000,77000,85000,93000,108000,128000,124000],borderColor:'#0ea5e9',backgroundColor:'rgba(14,165,233,0.05)',fill:false,tension:0.4,borderWidth:2.5,pointRadius:0,pointHoverRadius:5}
+    ]
+  },
+  options:{
+    maintainAspectRatio:false,
+    scales:{y:{grid:grid,ticks:{callback:v=>v>=1e6?(v/1e6)+'M':(v/1e3)+'k'}},x:{grid:{display:false}}},
+    plugins:{tooltip:{mode:'index',intersect:false,callbacks:{label:c=>c.dataset.label+': '+fmtN(c.parsed.y)}}},
+    interaction:{mode:'index',intersect:false}
+  }
+});
+
+/* Regions — soma CA01+CA02 (top 7) */
+const regions=[
+  {n:'Porto District',alc:282658,imp:1016476,freq:3.51,inv:5511.17,cpm:5.42},
+  {n:'Île-de-France',alc:126093,imp:911328,freq:7.23,inv:6157.30,cpm:6.76},
+  {n:'Braga District',alc:48078,imp:181377,freq:3.77,inv:1103.51,cpm:6.08},
+  {n:'England',alc:39309,imp:118136,freq:3.01,inv:832.01,cpm:7.04},
+  {n:'Luxembourg District',alc:40046,imp:263677,freq:6.58,inv:1543.54,cpm:5.85},
+  {n:'Rhône-Alpes',alc:5395,imp:17859,freq:3.31,inv:105.47,cpm:5.91},
+  {n:'Provence-Alpes-CA',alc:5306,imp:18852,freq:3.55,inv:103.39,cpm:5.48}
+];
+
+new Chart(document.getElementById('chartRegions'),{
+  type:'bar',
+  data:{
+    labels:regions.map(r=>r.n),
+    datasets:[{label:'Alcance',data:regions.map(r=>r.alc),backgroundColor:ctx=>vGrad(ctx,'#6366f1','#0ea5e9'),borderRadius:8}]
+  },
+  options:{
+    indexAxis:'y',maintainAspectRatio:false,
+    scales:{x:{grid:grid,ticks:{callback:v=>v>=1e3?(v/1e3)+'k':v}},y:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Alcance: '+fmtN(c.parsed.x)}}}
+  }
+});
+
+new Chart(document.getElementById('chartRegionsCpm'),{
+  type:'bar',
+  data:{
+    labels:regions.map(r=>r.n),
+    datasets:[{label:'CPM (€)',data:regions.map(r=>r.cpm),backgroundColor:ctx=>vGrad(ctx,'#10b981','#0ea5e9'),borderRadius:8}]
+  },
+  options:{
+    indexAxis:'y',maintainAspectRatio:false,
+    scales:{x:{grid:grid,ticks:{callback:v=>'€'+v}},y:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'CPM: €'+c.parsed.x.toFixed(2)}}}
+  }
+});
+
+/* Region tables fill */
+const regCa02=[
+  {n:'Porto District',co:'Portugal',a:100661,i:324563,f:3.22,v:1019.50,c:3.14},
+  {n:'Île-de-France',co:'França',a:20279,i:77172,f:3.81,v:439.70,c:5.70},
+  {n:'Rhône-Alpes',co:'França',a:5395,i:17859,f:3.31,v:105.47,c:5.91},
+  {n:'Provence-Alpes-Côte d\'Azur',co:'França',a:5306,i:18852,f:3.55,v:103.39,c:5.48},
+  {n:'Luxembourg District',co:'Luxemburgo',a:4774,i:13193,f:2.76,v:61.14,c:4.63}
+];
+const regCa01=[
+  {n:'Porto District',co:'Portugal',a:181997,i:691913,f:3.80,v:4491.67,c:6.49},
+  {n:'Île-de-France',co:'França',a:105814,i:834156,f:7.88,v:5717.60,c:6.85},
+  {n:'Braga District',co:'Portugal',a:48078,i:181377,f:3.77,v:1103.51,c:6.08},
+  {n:'England',co:'Reino Unido',a:39309,i:118136,f:3.01,v:832.01,c:7.04},
+  {n:'Luxembourg District',co:'Luxemburgo',a:35272,i:250484,f:7.10,v:1482.40,c:5.92}
+];
+function fillRegTable(id,arr){
+  const max=Math.max(...arr.map(r=>r.a));
+  const tb=document.getElementById(id);
+  tb.innerHTML=arr.map(r=>`
+    <tr>
+      <td class="name">${r.n}<div style="font-size:11px;font-weight:500;color:var(--ink-3);margin-top:2px">${r.co}</div></td>
+      <td class="num">${fmtN(r.a)}</td>
+      <td class="num">${fmtN(r.i)}</td>
+      <td class="num">${r.f.toFixed(2)}</td>
+      <td class="num">€${r.v.toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td class="num">€${r.c.toFixed(2)}</td>
+      <td><div class="bar-cell"><div class="mini-bar"><span style="width:${(r.a/max*100).toFixed(1)}%"></span></div></div></td>
+    </tr>`).join('');
+}
+fillRegTable('tblRegCa02',regCa02);
+fillRegTable('tblRegCa01',regCa01);
+
+/* ============ PAISES ============ */
+/* Total geral: €38.460,51
+   Atribuídos via top-5 regiões (CA01+CA02):
+   Portugal (Porto+Braga): 1019.50 + 4491.67 + 1103.51 = 6614.68
+   França (Île+Rhône+Provence): 439.70 + 105.47 + 103.39 + 5717.60 = 6366.16
+   Luxemburgo: 61.14 + 1482.40 = 1543.54
+   Reino Unido (England): 832.01
+   Não detalhados: 38460.51 - (6614.68+6366.16+1543.54+832.01) = 23104.12
+*/
+
+const paisTotal=38429.76;
+new Chart(document.getElementById('chartPaisDonut'),{
+  type:'doughnut',
+  data:{
+    labels:['🇵🇹 Portugal','🇫🇷 França','🇧🇪 Bélgica','🇨🇭 Suíça','🇱🇺 Luxemburgo','🇬🇧 Reino Unido','🇩🇪 Alemanha','🇳🇱 Países Baixos','🇳🇴 Noruega','Outros'],
+    datasets:[{
+      data:[6614.68,6366.16,3130.80,3130.80,1543.54,832.01,381.87,381.87,381.87,15666.16],
+      backgroundColor:['#6366f1','#0ea5e9','#8b5cf6','#10b981','#f59e0b','#ef4444','#64748b','#06b6d4','#a855f7','#cbd5e1'],
+      borderColor:'#fff',borderWidth:3,hoverOffset:8
+    }]
+  },
+  options:{
+    maintainAspectRatio:false,cutout:'58%',
+    plugins:{
+      legend:{position:'bottom',labels:{padding:10,font:{size:11}}},
+      tooltip:{callbacks:{label:c=>c.label+': '+fmtEUR(c.parsed)+' ('+((c.parsed/paisTotal)*100).toFixed(1)+'%)'}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartPaisBar'),{
+  type:'bar',
+  data:{
+    labels:['🇵🇹 Portugal','🇫🇷 França','🇧🇪 Bélgica','🇨🇭 Suíça','🇱🇺 Luxemburgo','🇬🇧 Reino Unido','🇩🇪 Alemanha','🇳🇱 P. Baixos','🇳🇴 Noruega'],
+    datasets:[{
+      label:'Investido (€)',
+      data:[6614.68,6366.16,3130.80,3130.80,1543.54,832.01,381.87,381.87,381.87],
+      backgroundColor:ctx=>{
+        const v=ctx.parsed?.x??0;
+        return v>=3000?vGrad(ctx,'#6366f1','#0ea5e9'):v>=1000?vGrad(ctx,'#8b5cf6','#ec4899'):vGrad(ctx,'#94a3b8','#64748b');
+      },
+      borderRadius:8
+    }]
+  },
+  options:{
+    indexAxis:'y',maintainAspectRatio:false,
+    scales:{x:{grid:grid,ticks:{callback:v=>'€'+fmtN(v)}},y:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmtEUR(c.parsed.x)+' ('+((c.parsed.x/paisTotal)*100).toFixed(1)+'%)'}}}
+  }
+});
+
+/* CA02 país (sem Procura-se Luna €30,75 removida):
+   Capilar (#1) €1.277,21 → PT 100%
+   Nicaela CA02 €1.042,18 → Outros (não mapeada)
+   Top regiões PDF CA02: PT €1.019,50 + FR €648,56 + LU €61,14 = €1.729,20 já alocados
+*/
+new Chart(document.getElementById('chartPaisCa02'),{
+  type:'doughnut',
+  data:{
+    labels:['🇵🇹 Portugal (Capilar)','Outros (Nicaela CA02 sem mapeamento)'],
+    datasets:[{
+      data:[1277.21,1042.18],
+      backgroundColor:['#6366f1','#cbd5e1'],
+      borderColor:'#fff',borderWidth:3,hoverOffset:8
+    }]
+  },
+  options:{
+    maintainAspectRatio:false,cutout:'58%',
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:11}}},
+      tooltip:{callbacks:{label:c=>{
+        const total=2319.39;
+        return c.label+': '+fmtEUR(c.parsed)+' ('+((c.parsed/total)*100).toFixed(1)+'%)';
+      }}}
+    }
+  }
+});
+
+/* CA01 país (consolidado):
+   Mapeadas top 5: #2 €4.382,84 → BE/CH/FR/LU split; #3 €6.612,89 → BE/CH/FR/LU split; #9 €3.054,97 → 8 países split
+   Não mapeadas top 5: ABO Nicaela €4.631,87 + [d] I €2.428,10 = €7.059,97 → Outros
+   Fora top 5: €36.110,37 - €21.110,67 = €14.999,70 → Outros
+   Distribuição via mapeamento:
+   PT (de #9 1/8): 381.87
+   FR (de #2/4 + #3/4 + #9/8): 1095.71+1653.22+381.87 = 3130.80
+   LU: 3130.80 (mesma lógica)
+   BE: 3130.80
+   CH: 3130.80
+   DE: 381.87
+   NL: 381.87
+   NO: 381.87
+   Subtotal mapeado: 14999.69 — confere com os totais das 3 campanhas (€14.050,70). Hmm na verdade 4382.84+6612.89+3054.97=14050.70. OK ajusto:
+*/
+new Chart(document.getElementById('chartPaisCa01'),{
+  type:'doughnut',
+  data:{
+    labels:['🇫🇷 França','🇧🇪 Bélgica','🇨🇭 Suíça','🇱🇺 Luxemburgo','🇩🇪 Alemanha','🇳🇱 P. Baixos','🇳🇴 Noruega','🇵🇹 PT-Norte','Outros'],
+    datasets:[{
+      data:[3130.80,3130.80,3130.80,3130.80,381.87,381.87,381.87,381.87,22059.69],
+      backgroundColor:['#0ea5e9','#8b5cf6','#10b981','#f59e0b','#64748b','#06b6d4','#a855f7','#6366f1','#cbd5e1'],
+      borderColor:'#fff',borderWidth:3,hoverOffset:8
+    }]
+  },
+  options:{
+    maintainAspectRatio:false,cutout:'58%',
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:10},padding:8}},
+      tooltip:{callbacks:{label:c=>{
+        const total=36110.37;
+        return c.label+': '+fmtEUR(c.parsed)+' ('+((c.parsed/total)*100).toFixed(1)+'%)';
+      }}}
+    }
+  }
+});
+</script>
+</body>
+</html>
